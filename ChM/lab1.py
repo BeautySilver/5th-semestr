@@ -1,18 +1,18 @@
-#!/usr/bin/env python
-# coding=utf8
-
-#  Лабораторна робота No.1, Солоного Олега, САТР-3, дихотомія + мод. Ньютона
+import  math
 import numpy as np
-import math
 
-E = float(format(0.001, '.4f'))
+equation = lambda x: 3*x**2 - math.cos(math.pi*x)**2 #целевое уравнение
+eps = 0.0001 #заданная точность
+a = -1
+b = 2
+x0 = 0.5
+phi = lambda x: 6*x + math.sin(math.pi*x)*math.cos(math.pi*x)
+phi1 = lambda x: 3*(math.sin(math.pi*x))**2 - 3*math.cos(math.pi*x)**2 + 6
 
-func = lambda x: (x ** 5 - 5 * x + 2)
 
-func_pohidna = lambda x: 5 * (x ** 4) - 5
-
-func_dr_pohidna = lambda x: 20 * (x ** 3)
-
+def modNewton(x):
+    res0 = phi(x0)
+    res = x - equation(x)/res0
 
 def itera(x0,phi,eps):
     res0 = phi(x0)
@@ -32,44 +32,9 @@ def iter(x0, phi):
         res = phi(res)
         print(res)
 
+print ("Метод простых итераций")
+iter(x0, phi)
+print ("Метод модифицированного ньютона")
+iter(x0,phi)
 
 
-#iter(x0, phi)
-#print(res1)
-#print(apr_n_dihot)
-#print(res2)
-def metod_Newton():
-    a = float(format(0.0, '.6f'))
-    b = float(format(1.0, '.6f'))
-    x = (a + b) / 2
-    x = float(format(x, '.6f'))
-
-    if func(x) * func(a) < 0:
-        x0 = a
-    else:
-        x0 = b
-    print
-    "Умова: %s" % (func(x0) * func_dr_pohidna(x0))
-    m1 = min(abs(float(format(func_pohidna(x0), '.6f'))), abs(float(format(func_pohidna(x), '.6f'))))
-    M2 = max(abs(float(format(func_dr_pohidna(x0), '.6f'))), abs(float(format(func_dr_pohidna(x), '.6f'))))
-    q = M2 * abs(x0 - x) / (2 * m1)
-    q = float(format(q, '.6f'))
-    apr_est = math.ceil(math.log(((math.log(abs(x - x0) / E) / math.log(1 / q)) + 1), 2))
-
-    print("Початкові умови: x0 = %s, x = %s, m1 = %s, M2= %s, q = %s, апріорна оцінка = %s\n" % (
-    x0, x, m1, M2, q, apr_est))
-
-    for i in range(1, int(apr_est)):
-        x = x - func(x) / func_pohidna(x)
-        print("На кроці %s х = %s\n" % (i, x))
-
-
-print
-"\n\n dihotomiya\n\n"
-
-metod_dihotomii()
-
-print
-"\n\n Newton\n"
-
-metod_Newton()
