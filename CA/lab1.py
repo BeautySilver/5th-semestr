@@ -1,109 +1,183 @@
 import numpy as np
-import numpy.linalg as ag
 import matplotlib.pyplot as plt
-import math
+import numpy.matrixlib as npm
 
-# Program settings
-delta = 0.01
-maxT = 20
-steps = maxT / delta
+n = 3
+I = np.eye(n)
+b = float(input("input b: "))
+k = int(input("input k: "))
+B = np.array([[0],
+              [0],
+              [b]])
+C = np.array([[1., 0, 0]])
 
-# Functions
-def matrix_exponencial(A:np.matrix, t):
-    return np.eye(3) + A*t + ag.matrix_power(A*t, 2) / math.factorial(2) #+ A*t + ag.matrix_power(A*t, 3) / math.factorial(3) + + A*t + ag.matrix_power(A*t, 4) / math.factorial(4) + A*t + ag.matrix_power(A*t, 5) / math.factorial(5)
+A = np.array([[0, 1., 0],
+              [0, 0, 1.],
+              [-1., -1., -3.]])
+
+T = float(input("input T: "))
+q = int(input("input q: "))
+i = int(input("input iterations: " ))
+
+x = np.array([[0],
+              [0],
+              [0]])
+
+y = C.dot(x)
+
+u1 = 1
+
+u2 = -1
+
+def Fq(q):
+    F=I
+    for i in range (q+1):
+        F = F + (np.linalg.matrix_power(A.dot(T), i) )/(np.math.factorial(i))
+    F = F - I
+    return F
+
+def Gq(q):
+    G = (F - I)
+    G= G.dot(np.linalg.inv(A))
+    G= G.dot(B)
+    return G
+
+F = Fq(q)
+G = Gq(q)
+
+def first(y, x, F, G):
+    global k
+    i =0
+    k = 0
+    fig1 = plt.figure()
+    plt.axis([0., i*T, -5, 5])
+    plt.grid()
+    fig1.set_size_inches(12, 8, forward=True)
+    plt.xlabel("t")
+    plt.ylabel("y")
+    x1 = []
+    x2 = []
+    x3 = []
+    yr = []
+    for j in range(0, i):
+
+        x = F.dot(x)  + (G)*u1
+        y = C.dot(x)
+        print(y)
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        k = k +1
+    plt.title("First task")
+    k = range(k)
+    plt.plot(k, x1, label = 'x1')
+    plt.plot(k, x2, label = 'x2')
+    plt.plot(k, x3, label = 'x3')
+    plt.plot(k, yr, label = 'y')
+    plt.legend()
+    plt.show()
+    i = i*T
+
+def second( y, x, F, G):
+    global k
+    k = 0
+    fig2 = plt.figure()
+    plt.axis([0., i, -5, 5])
+    plt.grid()
+    fig2.set_size_inches(12, 8, forward=True)
+    plt.xlabel("t")
+    plt.ylabel("y")
+    x1 = []
+    x2 = []
+    x3 = []
+    yr = []
+    for j in range(0, int(i/2)):
+        x = F.dot(x)  + (G)*u1
+        y = C.dot(x)
+        print(y)
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        k= k+1
+    for j in range(int(i/2), int(i)):
+        x = F.dot(x)  + (G)*u2
+        y = C.dot(x)
+        print(y)
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        k = k +1
+    k = range(k)
+    plt.plot(k, x1, label = 'x1')
+    plt.plot(k, x2, label = 'x2')
+    plt.plot(k, x3, label = 'x3')
+    plt.plot(k, yr, label = 'y')
+    plt.legend()
+    plt.title("Second task")
+    plt.show()
+
+def third( y, x, F, G ):
+    global k
+    k = 0
+    fig3 = plt.figure()
+    plt.axis([0., i, -6, 6])
+    plt.grid()
+    fig3.set_size_inches(12, 9, forward=True)
+    plt.xlabel("t")
+    plt.ylabel("y")
+    x1 = []
+    x2 = []
+    x3 = []
+    yr = []
+    for j in range(0, int(i/3)):
+        x = F.dot(x)  + (G)*u1
+        y = C.dot(x)
+        print(y)
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        k= k+1
+    for j in range(0, int(i/3)):
+        x = F.dot(x)  + (G)*u2
+        y = C.dot(x)
+        print(y)
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        k= k+1
+    for j in range(0, int(i/3)):
+        x = F.dot(x)  + (G)*u1
+        y = C.dot(x)
+        print(y)
+        print("k = %s, X1 = %s, X2 = %s, X3 = %s"%(k, x[0], x[1], x[2]))
+        x1.append(float(x[0]))
+        x2.append(float(x[1]))
+        x3.append(float(x[2]))
+        yr.append(float(y[0]))
+        k= k+1
+    k = range(k)
+    plt.plot(k, x1, label = 'x1')
+    plt.plot(k, x2, label = 'x2')
+    plt.plot(k, x3, label = 'x3')
+    plt.plot(k, yr, label = 'y')
+    plt.legend()
+    plt.title("Third task")
+    plt.show()
 
 
-def u(step, utype):
-    if utype == 1:
-        return 1
-    if utype == 2:
-        if step < steps / 2:
-            return 1
-        else:
-            return -1
-    if utype == 3:
-        if step % 2 == 1:
-            return 1
-        else:
-            return -1
-    if utype == 4:
-        return 5
-
-
-def Fi(A:np.matrix, delta):
-    return matrix_exponencial(A, delta)
-
-
-def H(Fi:np.matrix, A:np.matrix, B:np.matrix):
-    return (Fi - np.eye(3)).dot(ag.matrix_power(A, -1)).dot(B)
-
-
-# Parameters
-a0 = 1
-a1 = 2
-a2 = 4
-utype = 2
-A = np.matrix([[0, 1, 0],
-               [0, 0, 1],
-               [-a0, -a1, -a2]])
-B = np.matrix([[0],
-               [0],
-               [1]])
-C = np.matrix([1, 10, 80])
-
-x1 = 2
-x2 = 0
-x3 = 0
-x1Array = [x1]
-x2Array = [x2]
-x3Array = [x3]
-yArray = [C.dot(np.matrix([[x1Array[0]],
-                           [x2Array[0]],
-                           [x3Array[0]]]))]
-tArray = [0]
-Fi = Fi(A, delta)
-H = H(Fi, A, B)
-
-# Calculating
-j = 0
-i = 1
-while j < maxT:
-    # Calculating xi
-    xi = np.matrix([[x1Array[i-1]],
-                   [x2Array[i-1]],
-                   [x3Array[i-1]]])
-
-    # Creating y(t) values
-    yArray.append(C.dot(xi))
-
-    # Creating series (labeled x1(t)/x2(t)/x3(t))
-    x1Array.append((Fi.dot(xi) + H * u(i, utype)).item(0))
-    x2Array.append((Fi.dot(xi) + H * u(i, utype)).item(1))
-    x3Array.append((Fi.dot(xi) + H * u(i, utype)).item(2))
-    i = i + 1
-
-    # Creating abscissa axis values (labeled t)
-    tArray.append(j + delta)
-    j = j + delta
-
-
-# Drawing plots
-plt.xlabel('Time t')
-plt.ylabel('y(t)')
-scatter1 = plt.scatter(tArray, yArray, s=1)
-plt.show()
-
-plt.xlabel('Time t')
-plt.ylabel('x1(t)')
-scatter2 = plt.scatter(tArray, x1Array, s=1)
-plt.show()
-
-plt.xlabel('Time t')
-plt.ylabel('x2(t)')
-scatter3 = plt.scatter(tArray, x2Array, s=1)
-plt.show()
-
-plt.xlabel('Time t')
-plt.ylabel('x3(t)')
-scatter4 = plt.scatter(tArray, x3Array, s=1)
-plt.show()
+first( y, x, F, G)
+print("first finished")
+second(y, x, F, G)
+print("second finished")
+third(y, x, F, G)
+print("third finished")
